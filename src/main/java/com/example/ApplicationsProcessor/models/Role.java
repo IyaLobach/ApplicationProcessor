@@ -31,6 +31,10 @@ public class Role {
   public Role() {
   }
 
+  public Role(RoleEnum role) {
+    this.role = role;
+  }
+
   public void setRole(RoleEnum role) {
     this.role = role;
   }
@@ -39,9 +43,15 @@ public class Role {
     this.users = users;
   }
 
-  private enum RoleEnum {
-    USER,
-    ADMIN,
-    OPERATOR
+  public void addUser(User user) {
+    users.add(user);
+  }
+
+  public int getId() {
+    return id;
+  }
+
+  public void setId(int id) {
+    this.id = id;
   }
 }

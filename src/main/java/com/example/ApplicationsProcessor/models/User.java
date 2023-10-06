@@ -1,5 +1,6 @@
 package com.example.ApplicationsProcessor.models;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -49,6 +50,7 @@ public class User {
 
   public User() {
   }
+
   public int getId() {
     return id;
   }
@@ -96,5 +98,13 @@ public class User {
 
   public void addApplication(Application application) {
     applications.add(application);
+  }
+
+  public void addRole(Role role) {
+    this.role.add(role);
+  }
+
+  public void setId(int id) {
+    this.id = id;
   }
 }

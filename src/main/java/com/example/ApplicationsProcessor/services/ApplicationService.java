@@ -4,7 +4,6 @@ import com.example.ApplicationsProcessor.models.Application;
 import com.example.ApplicationsProcessor.models.Status;
 import com.example.ApplicationsProcessor.models.User;
 import com.example.ApplicationsProcessor.repositories.IApplicationRepository;
-import com.example.ApplicationsProcessor.util.ApplicationNotCreatedException;
 import com.example.ApplicationsProcessor.util.ApplicationNotSubmittedException;
 import java.util.Date;
 import java.util.List;
@@ -45,7 +44,7 @@ public class ApplicationService {
   @Transactional
   public void updateText(int id, String newText) {
     Optional<Application>  updateApplication = applicationRepository.findById(id);
-    if (updateApplication.isEmpty())
+    if (updateApplication.isEmpty() || !updateApplication.get().getStatus().getTitle().equals("Черновик"))
       throw new ApplicationNotSubmittedException("Не найдена заявка для отправки");
     updateApplication.get().setText(newText);
     applicationRepository.save(updateApplication.get());

@@ -7,10 +7,12 @@ import javax.validation.constraints.NotEmpty;
 
 public class ApplicationDTO {
 
-  @NotEmpty(message = "Текст заявки пуст")
+  @NotEmpty
   private String text;
 
   private Status status;
+
+  private Date date;
 
   public ApplicationDTO() {
   }
@@ -29,5 +31,13 @@ public class ApplicationDTO {
 
   public void setStatus(Status status) {
     this.status = status;
+  }
+
+  public Date getDate() {
+    return date;
+  }
+
+  public void setDate(Date date) {
+    this.date = date;
   }
 }

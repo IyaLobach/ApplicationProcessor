@@ -23,6 +23,12 @@ public class UserService {
     userRepository.save(user);
   }
 
+  @Transactional
+  public void update(int id, User user) {
+    user.setId(id);
+    userRepository.save(user);
+  }
+
   public User findById(int id) {
     return userRepository.findById(id).get();
   }

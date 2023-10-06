@@ -2,7 +2,10 @@ package com.example.ApplicationsProcessor.controllers;
 
 import com.example.ApplicationsProcessor.dto.ApplicationDTO;
 import com.example.ApplicationsProcessor.models.Application;
+import com.example.ApplicationsProcessor.models.Role;
+import com.example.ApplicationsProcessor.models.User;
 import com.example.ApplicationsProcessor.services.ApplicationService;
+import com.example.ApplicationsProcessor.services.RoleService;
 import com.example.ApplicationsProcessor.services.UserService;
 import com.example.ApplicationsProcessor.util.ApplicationErrorResponse;
 import com.example.ApplicationsProcessor.util.ApplicationNotCreatedException;
@@ -37,6 +40,9 @@ public class UserController {
   private ApplicationService applicationService;
 
   @Autowired
+  private RoleService roleService;
+
+  @Autowired
   private ModelMapper modelMapper;
 
   // НАДО ВОЗВРАЩАТЬ JSON!!!!
@@ -62,14 +68,14 @@ public class UserController {
   }
 
   /** отправка заявки = обновление статуса заявки */
-  @PatchMapping("/{userId}/applications/{applicationId}")
+  @PatchMapping("/{userId}/applications/submit/{applicationId}")
   public ResponseEntity<HttpStatus> updateStatus(@PathVariable("applicationId") int applicationId) {
     applicationService.updateStatus(applicationId);
     return ResponseEntity.ok(HttpStatus.OK);
   }
 
   /** редактирование заявки = обновление текста заявки */
-  @PatchMapping("/{userId}/applications/{applicationId}")
+  @PatchMapping("/{userId}/applications/edit/{applicationId}")
   public ResponseEntity<HttpStatus> updateText(
       @PathVariable("applicationId") int applicationId,
       @RequestBody @Valid ApplicationDTO applicationDTO, BindingResult bindingResult) {
@@ -113,7 +119,7 @@ public class UserController {
   private ResponseEntity<ApplicationErrorResponse> handlerException(
       ApplicationNotSubmittedException applicationNotSubmittedException) {
     ApplicationErrorResponse applicationErrorResponse = new ApplicationErrorResponse(
-        "Заявка не была отправлена");
+        "Заявка не может быть отредактирована");
 
     return new ResponseEntity<>(applicationErrorResponse, HttpStatus.NOT_FOUND);
   }
