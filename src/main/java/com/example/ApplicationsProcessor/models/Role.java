@@ -40,9 +40,8 @@ public class Role {
   }
 
   private enum RoleEnum {
-    DRAFT,
-    SUBMITTED,
-    REJECTED,
-    ACCEPTED
+    USER,
+    ADMIN,
+    OPERATOR
   }
 }

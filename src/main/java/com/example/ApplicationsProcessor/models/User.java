@@ -33,9 +33,6 @@ public class User {
   @Column(name = "email")
   private String email;
 
-  @Column(name = "password_hash")
-  private byte[] hash;
-
   @Column(name = "role")
   @Enumerated(EnumType.STRING)
   @ManyToMany
@@ -80,14 +77,6 @@ public class User {
     this.email = email;
   }
 
-  public byte[] getHash() {
-    return hash;
-  }
-
-  public void setHash(byte[] hash) {
-    this.hash = hash;
-  }
-
   public List<Application> getApplications() {
     return applications;
   }
@@ -103,5 +92,9 @@ public class User {
 
   public void setRole(List<Role> role) {
     this.role = role;
+  }
+
+  public void addApplication(Application application) {
+    applications.add(application);
   }
 }
