@@ -2,11 +2,11 @@ package com.example.ApplicationsProcessor.util;
 
 import java.time.LocalDateTime;
 
-public class ApplicationErrorResponse {
+public class ErrorResponse {
 
   private String message;
 
-  public ApplicationErrorResponse(String message) {
+  public ErrorResponse(String message) {
     this.message = message;
   }
 

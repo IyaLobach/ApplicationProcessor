@@ -2,14 +2,10 @@ package com.example.ApplicationsProcessor.controllers;
 
 import com.example.ApplicationsProcessor.dto.ApplicationDTO;
 import com.example.ApplicationsProcessor.models.Application;
-import com.example.ApplicationsProcessor.models.Role;
-import com.example.ApplicationsProcessor.models.User;
 import com.example.ApplicationsProcessor.services.ApplicationService;
-import com.example.ApplicationsProcessor.services.RoleService;
 import com.example.ApplicationsProcessor.services.UserService;
-import com.example.ApplicationsProcessor.util.ApplicationErrorResponse;
-import com.example.ApplicationsProcessor.util.ApplicationNotCreatedException;
-import com.example.ApplicationsProcessor.util.ApplicationNotSubmittedException;
+import com.example.ApplicationsProcessor.util.ErrorResponse;
+import com.example.ApplicationsProcessor.util.ApplicationException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.validation.Valid;
@@ -40,16 +36,12 @@ public class UserController {
   private ApplicationService applicationService;
 
   @Autowired
-  private RoleService roleService;
-
-  @Autowired
   private ModelMapper modelMapper;
 
-  // НАДО ВОЗВРАЩАТЬ JSON!!!!
 
   /** создание новой заявки */
   @PostMapping("/{userId}/applications")
-  public ResponseEntity<HttpStatus> createNewApplication(
+  public ResponseEntity<HttpStatus> create (
       @PathVariable("userId") int userId,
       @RequestBody @Valid ApplicationDTO applicationDTO, BindingResult bindingResult) {
 
@@ -59,7 +51,7 @@ public class UserController {
       for (FieldError error : errorList) {
         message.append(error.getDefaultMessage());
       }
-      throw new ApplicationNotCreatedException(message.toString());
+      throw new ApplicationException(message.toString());
     }
     applicationService
         .create(modelMapper.map(applicationDTO, Application.class), userService.findById(userId));
@@ -68,15 +60,15 @@ public class UserController {
   }
 
   /** отправка заявки = обновление статуса заявки */
-  @PatchMapping("/{userId}/applications/submit/{applicationId}")
-  public ResponseEntity<HttpStatus> updateStatus(@PathVariable("applicationId") int applicationId) {
-    applicationService.updateStatus(applicationId);
+  @PatchMapping("/{userId}/applications/{applicationId}/submit")
+  public ResponseEntity<HttpStatus> submit (@PathVariable("applicationId") int applicationId) {
+    applicationService.submit(applicationId);
     return ResponseEntity.ok(HttpStatus.OK);
   }
 
   /** редактирование заявки = обновление текста заявки */
-  @PatchMapping("/{userId}/applications/edit/{applicationId}")
-  public ResponseEntity<HttpStatus> updateText(
+  @PatchMapping("/{userId}/applications/{applicationId}/edit")
+  public ResponseEntity<HttpStatus> update (
       @PathVariable("applicationId") int applicationId,
       @RequestBody @Valid ApplicationDTO applicationDTO, BindingResult bindingResult) {
 
@@ -86,20 +78,19 @@ public class UserController {
       for (FieldError error : errorList) {
         message.append(error.getDefaultMessage());
       }
-      throw new ApplicationNotCreatedException(message.toString());
+      throw new ApplicationException(message.toString());
     }
     applicationService.updateText(applicationId, modelMapper.map(applicationDTO, Application.class).getText());
 
     return ResponseEntity.ok(HttpStatus.OK);
   }
 
-  // ЧТО ТУТ ВОЗВРАЩАТЬ??? По идее Response
-  // есть реализация в проекте №3 в 15 модуле
-  // проблема N + 1!!!!!
+  // проблема N + 1 и ПАГИНАЦИЯ
+  // ВЫВОД ПО УСЛОВИЮ ЗАДАНИЯ!!!
   /** просмотр заявок ПОКА БЕЗ ПАГИНАЦИИ  */
   @GetMapping("/{userId}/applications")
-  public ResponseEntity<List<ApplicationDTO>> getApplication(@PathVariable("userId") int userId) {
-    List<Application> applicationList = applicationService.showApplication(userId);
+  public ResponseEntity<List<ApplicationDTO>> show(@PathVariable("userId") int userId) {
+    List<Application> applicationList = applicationService.showApplicationByUserId(userId);
     ArrayList<ApplicationDTO> applicationDTOList = new ArrayList<>();
     for (Application application : applicationList)
       applicationDTOList.add(modelMapper.map(application, ApplicationDTO.class));
@@ -107,20 +98,11 @@ public class UserController {
   }
 
   @ExceptionHandler
-  private ResponseEntity<ApplicationErrorResponse> handlerException(
-      ApplicationNotCreatedException applicationNotCreatedException) {
-    ApplicationErrorResponse applicationErrorResponse = new ApplicationErrorResponse(
-        "Заявка не была добавлена");
+  private ResponseEntity<ErrorResponse> handlerException(
+      ApplicationException applicationException) {
+    ErrorResponse applicationErrorResponse = new ErrorResponse(
+        applicationException.getMessage());
 
     return new ResponseEntity<>(applicationErrorResponse, HttpStatus.BAD_REQUEST);
-  }
-
-  @ExceptionHandler
-  private ResponseEntity<ApplicationErrorResponse> handlerException(
-      ApplicationNotSubmittedException applicationNotSubmittedException) {
-    ApplicationErrorResponse applicationErrorResponse = new ApplicationErrorResponse(
-        "Заявка не может быть отредактирована");
-
-    return new ResponseEntity<>(applicationErrorResponse, HttpStatus.NOT_FOUND);
   }
 }
