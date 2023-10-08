@@ -3,6 +3,8 @@ package com.example.ApplicationsProcessor.controllers;
 import com.example.ApplicationsProcessor.dto.ApplicationDTO;
 import com.example.ApplicationsProcessor.dto.UserForViewDTO;
 import com.example.ApplicationsProcessor.models.Application;
+import com.example.ApplicationsProcessor.models.Role;
+import com.example.ApplicationsProcessor.models.User;
 import com.example.ApplicationsProcessor.services.ApplicationService;
 import com.example.ApplicationsProcessor.services.RoleService;
 import com.example.ApplicationsProcessor.services.UserService;
@@ -47,11 +49,11 @@ public class UserController {
 //  @GetMapping()
 //  public void create() {
 //    User user = new User();
-//    user.setName("Анна");
-//    user.setSurname("Иванова");
+//    user.setName("Анита");
+//    user.setSurname("Климова");
 //    Role role = roleService.findById(2);
 //    user.addRole(role);
-//    user.setEmail("ann@mail.ru");
+//    user.setEmail("anita@mail.ru");
 //    userService.save(user);
 //    User operator2 = new User();
 //    operator2.setName("Петр");

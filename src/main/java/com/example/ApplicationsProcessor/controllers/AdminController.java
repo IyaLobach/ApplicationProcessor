@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -61,21 +62,27 @@ public class AdminController {
 //  }
 
 
-   /**
-   Назначение пользователя правами оператора
+  /**
+   * Назначение пользователя правами оператора
    */
   @PatchMapping("/{adminId}/users/{userId}/appoint")
   public ResponseEntity<HttpStatus> appoint(@PathVariable("userId") int userId) {
-    userService.updateRole(userId ,roleService.findByRoleEnum(RoleEnum.OPERATOR));
+    userService.updateRole(userId, roleService.findByRoleEnum(RoleEnum.OPERATOR));
     return ResponseEntity.ok(HttpStatus.OK);
   }
 
   /**
-   Получение всех пользователей
+   * Получение всех пользователей
    */
   @GetMapping("/{adminId}/users")
-  public ResponseEntity<List<UserDTO>> show() {
-    List<User> userList = userService.findAll();
+  public ResponseEntity<List<UserDTO>> show(
+      @RequestParam(value = "name", required = false) String userName) {
+    List<User> userList = null;
+    if (userName == null) {
+      userList = userService.findAll();
+    } else {
+      userList = userService.findByUserName(userName);
+    }
     ArrayList<UserDTO> userDTOList = new ArrayList<>();
     for (User user : userList) {
       UserDTO userDTO = modelMapper.map(user, UserDTO.class);
