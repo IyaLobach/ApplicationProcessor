@@ -1,15 +1,19 @@
 package com.example.ApplicationsProcessor.dto;
 
 import com.example.ApplicationsProcessor.models.Role;
+import com.example.ApplicationsProcessor.models.RoleEnum;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
 
 public class UserDTO {
   private String name;
   private String surname;
-  @Email
   private String email;
-  private List<Role> role;
+  private List<RoleEnum> roleEnum = new ArrayList<>();
 
   public UserDTO() {
   }
@@ -38,11 +42,15 @@ public class UserDTO {
     this.email = email;
   }
 
-  public List<Role> getRole() {
-    return role;
+  public List<RoleEnum> getRoleEnum() {
+    return roleEnum;
   }
 
-  public void setRole(List<Role> role) {
-    this.role = role;
+  public void setRoleEnum(List<Role> role) {
+    for (Role r : role) {
+      this.roleEnum.add(r.getRole());
+    }
   }
+
+
 }

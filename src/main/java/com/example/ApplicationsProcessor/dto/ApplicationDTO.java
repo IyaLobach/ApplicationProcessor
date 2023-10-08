@@ -7,7 +7,6 @@ import javax.validation.constraints.NotEmpty;
 
 public class ApplicationDTO {
 
-  @NotEmpty
   private String text;
 
   private Status status;

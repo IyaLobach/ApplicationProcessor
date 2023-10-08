@@ -35,18 +35,19 @@ public class UserService {
   }
 
   @Transactional
-  public void updateRole(int id) {
+  public void updateRole(int id, Role role) {
     Optional<User> user = userRepository.findById(id);
     if (user.isEmpty()) {
       throw new UserException("Пользователь не найден");
     }
     List<Role> roles = user.get().getRole();
-    for (Role role : roles) {
-      if (role.getRole().getTitle().equals("Оператор")) {
+    for (Role r : roles) {
+      if (r.getRole().getTitle().equals("Оператор")) {
         return;
       }
     }
-    roles.add(new Role(RoleEnum.OPERATOR));
+    role.addUser(user.get());
+    user.get().addRole(role);
   }
 
   public User findById(int id) {
@@ -56,4 +57,6 @@ public class UserService {
   public List<User> findAll() {
     return userRepository.findAll();
   }
+
+
 }

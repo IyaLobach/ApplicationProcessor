@@ -97,10 +97,14 @@ public class User {
   }
 
   public void addApplication(Application application) {
+    if (applications == null)
+      applications = new ArrayList<>();
     applications.add(application);
   }
 
   public void addRole(Role role) {
+    if (this.role == null)
+      this.role = new ArrayList<>();
     this.role.add(role);
   }
 

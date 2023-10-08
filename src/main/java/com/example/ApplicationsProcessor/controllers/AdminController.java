@@ -3,6 +3,8 @@ package com.example.ApplicationsProcessor.controllers;
 import com.example.ApplicationsProcessor.dto.ApplicationDTO;
 import com.example.ApplicationsProcessor.dto.UserDTO;
 import com.example.ApplicationsProcessor.models.Application;
+import com.example.ApplicationsProcessor.models.Role;
+import com.example.ApplicationsProcessor.models.RoleEnum;
 import com.example.ApplicationsProcessor.models.Status;
 import com.example.ApplicationsProcessor.models.User;
 import com.example.ApplicationsProcessor.services.ApplicationService;
@@ -12,6 +14,7 @@ import com.example.ApplicationsProcessor.util.ErrorResponse;
 import com.example.ApplicationsProcessor.util.UserException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,7 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/admin")
+@RequestMapping("/api/admins")
 public class AdminController {
 
   @Autowired
@@ -39,25 +42,52 @@ public class AdminController {
   @Autowired
   private ModelMapper modelMapper;
 
+//  @GetMapping()
+//  public void create() {
+//    User admin = new User();
+//    admin.setName("Виктория");
+//    admin.setSurname("Повх");
+//    Role role = roleService.findById(1);
+//    admin.addRole(role);
+//    admin.setEmail("povch@mail.ru");
+//    userService.save(admin);
+//    User admin2 = new User();
+//    admin2.setName("Гера");
+//    admin2.setSurname("Вишневская");
+//    Role role2 = roleService.findById(1);
+//    admin2.addRole(role2);
+//    admin2.setEmail("gera@mail.ru");
+//    userService.save(admin2);
+//  }
 
+
+   /**
+   Назначение пользователя правами оператора
+   */
   @PatchMapping("/{adminId}/users/{userId}/appoint")
   public ResponseEntity<HttpStatus> appoint(@PathVariable("userId") int userId) {
-    userService.updateRole(userId);
+    userService.updateRole(userId ,roleService.findByRoleEnum(RoleEnum.OPERATOR));
     return ResponseEntity.ok(HttpStatus.OK);
   }
 
-  @GetMapping("/{adminId}/user")
+  /**
+   Получение всех пользователей
+   */
+  @GetMapping("/{adminId}/users")
   public ResponseEntity<List<UserDTO>> show() {
     List<User> userList = userService.findAll();
     ArrayList<UserDTO> userDTOList = new ArrayList<>();
-    for (User user : userList)
-     userDTOList.add(modelMapper.map(user, UserDTO.class));
+    for (User user : userList) {
+      UserDTO userDTO = modelMapper.map(user, UserDTO.class);
+      userDTO.setRoleEnum(user.getRole());
+      userDTOList.add(userDTO);
+    }
     return new ResponseEntity<>(userDTOList, HttpStatus.OK);
   }
 
   @ExceptionHandler
   private ResponseEntity<ErrorResponse> handlerException(
-     UserException userException) {
+      UserException userException) {
     ErrorResponse errorResponse = new ErrorResponse(
         userException.getMessage());
     return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);

@@ -1,5 +1,6 @@
 package com.example.ApplicationsProcessor.models;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -57,5 +58,11 @@ public class Role {
 
   public void setUsers(List<User> users) {
     this.users = users;
+  }
+
+  public void addUser(User user) {
+    if (users == null)
+      users = new ArrayList<>();
+    users.add(user);
   }
 }

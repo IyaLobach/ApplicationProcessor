@@ -1,6 +1,7 @@
 package com.example.ApplicationsProcessor.services;
 
 import com.example.ApplicationsProcessor.models.Role;
+import com.example.ApplicationsProcessor.models.RoleEnum;
 import com.example.ApplicationsProcessor.repositories.IRoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,4 +26,8 @@ public class RoleService {
     role.setId(id);
     roleRepository.save(role);
   }
+  public Role findByRoleEnum(RoleEnum roleEnum) {
+    return (Role) roleRepository.findByRole(roleEnum);
+  }
+
 }
