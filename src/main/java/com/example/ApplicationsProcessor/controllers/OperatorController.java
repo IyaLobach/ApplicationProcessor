@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -78,12 +79,13 @@ public class OperatorController {
   }
 
   /**
-   * Просмотр отправленных заявок пока без пагинации
+   * Просмотр отправленных заявок
    */
   @GetMapping("/{operatorId}/applications")
-  public ResponseEntity<List<ApplicationDTO>> show() {
+  public ResponseEntity<List<ApplicationDTO>> show(@RequestParam("page") int page,
+      @RequestParam("sort") String sort) {
     List<Application> applicationList = applicationService
-        .showApplicationByStatus(Status.SUBMITTED);
+        .showApplicationByStatus(Status.SUBMITTED, page, sort);
     ArrayList<ApplicationDTO> applicationDTOList = new ArrayList<>();
     for (Application application : applicationList) {
       ApplicationDTO applicationDTO = modelMapper.map(application, ApplicationDTO.class);

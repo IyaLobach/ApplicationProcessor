@@ -9,6 +9,7 @@ import com.example.ApplicationsProcessor.services.RoleService;
 import com.example.ApplicationsProcessor.services.UserService;
 import com.example.ApplicationsProcessor.util.ErrorResponse;
 import com.example.ApplicationsProcessor.util.ApplicationException;
+import java.awt.print.Pageable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.validation.Valid;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -116,15 +118,14 @@ public class UserController {
     return ResponseEntity.ok(HttpStatus.OK);
   }
 
-  // проблема N + 1 и ПАГИНАЦИЯ
-  // ВЫВОД ПО УСЛОВИЮ ЗАДАНИЯ!!!
-
+  // проблема N + 1
   /**
    Просмотр заявок ПОКА БЕЗ ПАГИНАЦИИ
    */
   @GetMapping("/{userId}/applications")
-  public ResponseEntity<List<ApplicationDTO>> show(@PathVariable("userId") int userId) {
-    List<Application> applicationList = applicationService.showApplicationByUserId(userId);
+  public ResponseEntity<List<ApplicationDTO>> show(@PathVariable("userId") int userId,
+      @RequestParam("page") int page, @RequestParam("sort") String sort) {
+    List<Application> applicationList = applicationService.showApplicationByUserId(userId, page, sort);
     ArrayList<ApplicationDTO> applicationDTOList = new ArrayList<>();
     for (Application application : applicationList) {
       applicationDTOList.add(modelMapper.map(application, ApplicationDTO.class));

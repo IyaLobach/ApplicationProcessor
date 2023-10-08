@@ -10,6 +10,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -87,12 +90,43 @@ public class ApplicationService {
     applicationRepository.save(updateApplication.get());
   }
 
-  public List<Application> showApplicationByUserId(int userId) {
-    return applicationRepository.findAllByUserId(userId);
+  public List<Application> showApplicationByUserId(int userId, int page, String sort) {
+    Page<Application> result = null;
+    if (sort.equals("asc")) {
+      result = applicationRepository
+          .findByUserId(userId, PageRequest.of(page, 5), Sort.by("date").ascending());
+    } else {
+      if (sort.equals("desc")) {
+        result = applicationRepository
+            .findByUserId(userId, PageRequest.of(page, 5), Sort.by("date").descending());
+      } else {
+        throw new ApplicationException("Сортировка задана неверно");
+      }
+    }
+    if (result == null) {
+      throw new ApplicationException("Номер старницы указан неверно");
+    }
+    return result.getContent();
   }
 
-  public List<Application> showApplicationByStatus(Status status) {
-    return applicationRepository.findAllByStatus(status);
+  public List<Application> showApplicationByStatus(Status status, int page, String sort) {
+    Page<Application> applications = null;
+    if (sort.equals("asc")) {
+      applications = applicationRepository
+          .findAllByStatus(status, PageRequest.of(page, 5), Sort.by("date").ascending());
+    } else {
+      if (sort.equals("desc")) {
+        applications = applicationRepository
+            .findAllByStatus(status, PageRequest.of(page, 5), Sort.by("date").descending());
+      }
+      else {
+        throw new ApplicationException("Неверно задана сортировка");
+      }
+    }
+    if (applications == null) {
+      throw new ApplicationException("Неверно задана страница");
+    }
+    return applications.getContent();
   }
 
 }
