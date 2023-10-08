@@ -1,15 +1,13 @@
 package com.example.ApplicationsProcessor.controllers;
 
 import com.example.ApplicationsProcessor.dto.ApplicationDTO;
+import com.example.ApplicationsProcessor.dto.UserForViewDTO;
 import com.example.ApplicationsProcessor.models.Application;
-import com.example.ApplicationsProcessor.models.Role;
-import com.example.ApplicationsProcessor.models.User;
 import com.example.ApplicationsProcessor.services.ApplicationService;
 import com.example.ApplicationsProcessor.services.RoleService;
 import com.example.ApplicationsProcessor.services.UserService;
 import com.example.ApplicationsProcessor.util.ErrorResponse;
 import com.example.ApplicationsProcessor.util.ApplicationException;
-import java.awt.print.Pageable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.validation.Valid;
@@ -66,7 +64,7 @@ public class UserController {
 
 
   /**
-   Создание новой заявки
+   * Создание новой заявки
    */
   @PostMapping("/{userId}/applications")
   public ResponseEntity<HttpStatus> create(
@@ -88,7 +86,7 @@ public class UserController {
   }
 
   /**
-   Отправка заявки = обновление статуса заявки
+   * Отправка заявки = обновление статуса заявки
    */
   @PatchMapping("/{userId}/applications/{applicationId}/submit")
   public ResponseEntity<HttpStatus> submit(@PathVariable("applicationId") int applicationId) {
@@ -97,7 +95,7 @@ public class UserController {
   }
 
   /**
-   Редактирование заявки = обновление текста заявки
+   * Редактирование заявки = обновление текста заявки
    */
   @PatchMapping("/{userId}/applications/{applicationId}/edit")
   public ResponseEntity<HttpStatus> update(
@@ -119,16 +117,26 @@ public class UserController {
   }
 
   // проблема N + 1
+
   /**
-   Просмотр заявок ПОКА БЕЗ ПАГИНАЦИИ
+   * Просмотр заявок
    */
   @GetMapping("/{userId}/applications")
   public ResponseEntity<List<ApplicationDTO>> show(@PathVariable("userId") int userId,
-      @RequestParam("page") int page, @RequestParam("sort") String sort) {
-    List<Application> applicationList = applicationService.showApplicationByUserId(userId, page, sort);
+      @RequestParam(value = "page", required = false) String page,
+      @RequestParam(value = "sort", required = false) String sort) {
+    List<Application> applicationList = null;
+    if (page == null) {
+      applicationList = applicationService.showApplicationByUserId(userId);
+    } else {
+      applicationList = applicationService
+          .showApplicationByUserId(userId, Integer.parseInt(page), sort);
+    }
     ArrayList<ApplicationDTO> applicationDTOList = new ArrayList<>();
     for (Application application : applicationList) {
-      applicationDTOList.add(modelMapper.map(application, ApplicationDTO.class));
+      ApplicationDTO applicationDTO = modelMapper.map(application, ApplicationDTO.class);
+      applicationDTO.setUserForViewDTO(modelMapper.map(application.getUser(), UserForViewDTO.class));
+      applicationDTOList.add(applicationDTO);
     }
     return new ResponseEntity<>(applicationDTOList, HttpStatus.OK);
   }

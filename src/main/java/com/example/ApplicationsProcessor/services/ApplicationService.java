@@ -109,6 +109,10 @@ public class ApplicationService {
     return result.getContent();
   }
 
+  public List<Application> showApplicationByUserId(int userId) {
+    return applicationRepository.findAllByUserId(userId);
+  }
+
   public List<Application> showApplicationByStatus(Status status, int page, String sort) {
     Page<Application> applications = null;
     if (sort.equals("asc")) {
@@ -118,15 +122,44 @@ public class ApplicationService {
       if (sort.equals("desc")) {
         applications = applicationRepository
             .findAllByStatus(status, PageRequest.of(page, 5), Sort.by("date").descending());
-      }
-      else {
+      } else {
         throw new ApplicationException("Неверно задана сортировка");
       }
     }
-    if (applications == null) {
+    if (applications.isEmpty()) {
       throw new ApplicationException("Неверно задана страница");
     }
     return applications.getContent();
   }
+
+  public List<Application> showApplicationByStatus(Status status) {
+    return applicationRepository.findAllByStatus(status);
+  }
+
+  public List<Application> showApplicationByUserName(String userName) {
+    return applicationRepository.findAllByStatusAndUserNameContaining(Status.SUBMITTED, userName);
+  }
+
+  public List<Application> showApplicationByUserName(String userName, int page, String sort) {
+    Page<Application> applications = null;
+    if (sort.equals("asc")) {
+      applications = applicationRepository
+         .findAllByStatusAndUserNameContaining(Status.SUBMITTED, userName, PageRequest.of(page, 5),
+              Sort.by("date").ascending());
+    } else {
+      if (sort.equals("desc")) {
+        applications = applicationRepository
+            .findAllByStatusAndUserNameContaining(Status.SUBMITTED, userName, PageRequest.of(page, 5),
+                Sort.by("date").descending());
+      } else {
+        throw new ApplicationException("Неверно задана сортировка");
+      }
+    }
+    if (applications.isEmpty()) {
+      throw new ApplicationException("Неверно задана страница или указано имя пользователя");
+    }
+    return applications.getContent();
+  }
+
 
 }

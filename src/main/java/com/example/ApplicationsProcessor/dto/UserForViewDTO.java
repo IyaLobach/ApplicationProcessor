@@ -1,17 +1,13 @@
 package com.example.ApplicationsProcessor.dto;
 
-import com.example.ApplicationsProcessor.models.Role;
-import com.example.ApplicationsProcessor.models.RoleEnum;
-import java.util.ArrayList;
-import java.util.List;
+public class UserForViewDTO {
 
-public class UserDTO {
   private String name;
   private String surname;
   private String email;
-  private List<RoleEnum> roleEnum = new ArrayList<>();
 
-  public UserDTO() {
+  public UserForViewDTO() {
+
   }
 
   public String getName() {
@@ -38,13 +34,4 @@ public class UserDTO {
     this.email = email;
   }
 
-  public List<RoleEnum> getRoleEnum() {
-    return roleEnum;
-  }
-
-  public void setRoleEnum(List<Role> role) {
-    for (Role r : role) {
-      this.roleEnum.add(r.getRole());
-    }
-  }
 }

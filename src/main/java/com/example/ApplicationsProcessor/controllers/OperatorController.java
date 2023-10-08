@@ -1,6 +1,7 @@
 package com.example.ApplicationsProcessor.controllers;
 
 import com.example.ApplicationsProcessor.dto.ApplicationDTO;
+import com.example.ApplicationsProcessor.dto.UserForViewDTO;
 import com.example.ApplicationsProcessor.models.Application;
 import com.example.ApplicationsProcessor.models.Role;
 import com.example.ApplicationsProcessor.models.Status;
@@ -78,22 +79,40 @@ public class OperatorController {
     return ResponseEntity.ok(HttpStatus.OK);
   }
 
+  // ПРОБЛЕМА N + 1
   /**
    * Просмотр отправленных заявок
    */
   @GetMapping("/{operatorId}/applications")
-  public ResponseEntity<List<ApplicationDTO>> show(@RequestParam("page") int page,
-      @RequestParam("sort") String sort) {
-    List<Application> applicationList = applicationService
-        .showApplicationByStatus(Status.SUBMITTED, page, sort);
+  public ResponseEntity<List<ApplicationDTO>> show(
+      @RequestParam(value = "page", required = false) String page,
+      @RequestParam(value = "sort", required = false) String sort,
+      @RequestParam(value = "name", required = false) String userName) {
+    List<Application> applicationList = null;
+    if (page == null) {
+      if (userName == null) {
+        applicationList = applicationService.showApplicationByStatus(Status.SUBMITTED);
+      } else {
+        applicationList = applicationService.showApplicationByUserName(userName);
+      }
+    } else {
+      if (userName != null) {
+        applicationList = applicationService.showApplicationByUserName(userName, Integer.parseInt(page), sort);
+      } else {
+        applicationList = applicationService
+            .showApplicationByStatus(Status.SUBMITTED, Integer.parseInt(page), sort);
+      }
+    }
     ArrayList<ApplicationDTO> applicationDTOList = new ArrayList<>();
     for (Application application : applicationList) {
       ApplicationDTO applicationDTO = modelMapper.map(application, ApplicationDTO.class);
+      applicationDTO.setUserForViewDTO(modelMapper.map(application.getUser(), UserForViewDTO.class));
       applicationDTO.applicationTextConversion();
       applicationDTOList.add(applicationDTO);
     }
     return new ResponseEntity<>(applicationDTOList, HttpStatus.OK);
   }
+
 
   @ExceptionHandler
   private ResponseEntity<ErrorResponse> handlerException(
