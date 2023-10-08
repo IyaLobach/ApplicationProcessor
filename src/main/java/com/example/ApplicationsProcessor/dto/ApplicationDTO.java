@@ -2,6 +2,7 @@ package com.example.ApplicationsProcessor.dto;
 
 import com.example.ApplicationsProcessor.models.Status;
 import java.util.Date;
+import java.util.regex.Pattern;
 import javax.persistence.Id;
 import javax.validation.constraints.NotEmpty;
 
@@ -38,5 +39,9 @@ public class ApplicationDTO {
 
   public void setDate(Date date) {
     this.date = date;
+  }
+
+  public void applicationTextConversion() {
+    text = text.replaceAll(".", "$0-");
   }
 }

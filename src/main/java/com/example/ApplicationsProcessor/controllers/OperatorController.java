@@ -58,7 +58,7 @@ public class OperatorController {
 //  }
 
   /**
-   Принятие заявки = изменение статуса заявки
+   * Принятие заявки = изменение статуса заявки
    */
   @PatchMapping("/{operatorId}/applications/{applicationId}/accept")
   public ResponseEntity<HttpStatus> accept(
@@ -68,24 +68,28 @@ public class OperatorController {
   }
 
   /**
-   Отклонение заявки = изменение статуса заявки
+   * Отклонение заявки = изменение статуса заявки
    */
   @PatchMapping("/{operatorId}/applications/{applicationId}/reject")
-  public ResponseEntity<HttpStatus> reject (
+  public ResponseEntity<HttpStatus> reject(
       @PathVariable("applicationId") int applicationId) {
     applicationService.reject(applicationId);
     return ResponseEntity.ok(HttpStatus.OK);
   }
 
   /**
-   Просмотр отправленных заявок пока без пагинации
+   * Просмотр отправленных заявок пока без пагинации
    */
   @GetMapping("/{operatorId}/applications")
   public ResponseEntity<List<ApplicationDTO>> show() {
-    List<Application> applicationList = applicationService.showApplicationByStatus(Status.SUBMITTED);
+    List<Application> applicationList = applicationService
+        .showApplicationByStatus(Status.SUBMITTED);
     ArrayList<ApplicationDTO> applicationDTOList = new ArrayList<>();
-    for (Application application : applicationList)
-      applicationDTOList.add(modelMapper.map(application, ApplicationDTO.class));
+    for (Application application : applicationList) {
+      ApplicationDTO applicationDTO = modelMapper.map(application, ApplicationDTO.class);
+      applicationDTO.applicationTextConversion();
+      applicationDTOList.add(applicationDTO);
+    }
     return new ResponseEntity<>(applicationDTOList, HttpStatus.OK);
   }
 

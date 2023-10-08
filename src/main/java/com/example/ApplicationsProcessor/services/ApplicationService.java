@@ -34,7 +34,7 @@ public class ApplicationService {
   }
 
   @Transactional
-  public void submit (int id) {
+  public void submit(int id) {
     Optional<Application> updateApplication = applicationRepository.findById(id);
     if (updateApplication.isEmpty()) {
       throw new ApplicationException("Не найдена заявка для отправки");
@@ -52,7 +52,8 @@ public class ApplicationService {
     if (updateApplication.isEmpty()) {
       throw new ApplicationException("Не найдена заявка для отправки");
     }
-    if (updateApplication.get().getStatus().getTitle().equals("Черновик") || updateApplication.get().getStatus().getTitle().equals("Отклонена")) {
+    if (updateApplication.get().getStatus().getTitle().equals("Черновик") || updateApplication.get()
+        .getStatus().getTitle().equals("Отклонена")) {
       throw new ApplicationException("Заявка не может быть принята");
     }
     updateApplication.get().setStatus(Status.ACCEPTED);
@@ -65,7 +66,8 @@ public class ApplicationService {
     if (updateApplication.isEmpty()) {
       throw new ApplicationException("Не найдена заявка для отправки");
     }
-    if (updateApplication.get().getStatus().getTitle().equals("Черновик") || updateApplication.get().getStatus().getTitle().equals("Принята")) {
+    if (updateApplication.get().getStatus().getTitle().equals("Черновик") || updateApplication.get()
+        .getStatus().getTitle().equals("Принята")) {
       throw new ApplicationException("Заявка не может быть отклонена");
     }
     updateApplication.get().setStatus(Status.REJECTED);
