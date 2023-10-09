@@ -7,6 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -15,6 +16,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import org.hibernate.annotations.Fetch;
 
 @Entity
 @Table(schema = "application_processor", name = "user")
@@ -34,9 +36,12 @@ public class User {
   @Column(name = "email")
   private String email;
 
+  @Column(name = "password")
+  private String password;
+
   @Column(name = "role")
   @Enumerated(EnumType.STRING)
-  @ManyToMany
+  @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(
       schema = "application_processor",
       name = "user_role",
@@ -79,6 +84,14 @@ public class User {
     this.email = email;
   }
 
+  public String getPassword() {
+    return password;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
+  }
+
   public List<Application> getApplications() {
     return applications;
   }
@@ -89,6 +102,14 @@ public class User {
   }
 
   public List<Role> getRole() {
+    return role;
+  }
+
+  public List<String> getRoleTitle() {
+    ArrayList<String> role = new ArrayList<>();
+    for (Role r : this.role) {
+      role.add(r.getRole().getTitle());
+    }
     return role;
   }
 

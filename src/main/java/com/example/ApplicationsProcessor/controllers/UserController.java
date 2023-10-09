@@ -4,6 +4,7 @@ import com.example.ApplicationsProcessor.dto.ApplicationDTO;
 import com.example.ApplicationsProcessor.dto.UserForViewDTO;
 import com.example.ApplicationsProcessor.models.Application;
 import com.example.ApplicationsProcessor.models.Role;
+import com.example.ApplicationsProcessor.models.RoleEnum;
 import com.example.ApplicationsProcessor.models.User;
 import com.example.ApplicationsProcessor.services.ApplicationService;
 import com.example.ApplicationsProcessor.services.RoleService;
@@ -49,19 +50,29 @@ public class UserController {
 //  @GetMapping()
 //  public void create() {
 //    User user = new User();
-//    user.setName("Анита");
-//    user.setSurname("Климова");
-//    Role role = roleService.findById(2);
+//    user.setName("Ия");
+//    user.setSurname("Лобач");
+//    user.setPassword("1234");
+//    Role role = roleService.findByRoleEnum(RoleEnum.ROLE_USER);
 //    user.addRole(role);
-//    user.setEmail("anita@mail.ru");
+//    user.setEmail("iya@mail.ru");
 //    userService.save(user);
-//    User operator2 = new User();
-//    operator2.setName("Петр");
-//    operator2.setSurname("Петров");
-//    Role role2 = roleService.findById(2);
-//    operator2.addRole(role2);
-//    operator2.setEmail("petr@mail.ru");
-//    userService.save(operator2);
+//    User user2 = new User();
+//    user2.setName("Петр");
+//    user2.setSurname("Петров");
+//    Role role2 = roleService.findByRoleEnum(RoleEnum.ROLE_USER);
+//    user2.addRole(role2);
+//    user2.setEmail("petr@mail.ru");
+//    user2.setPassword("4567");
+//    userService.save(user2);
+//    User user3 = new User();
+//    user3.setName("Анита");
+//    user3.setSurname("Климова");
+//    user3.setPassword("8910");
+//    Role role3 = roleService.findByRoleEnum(RoleEnum.ROLE_USER);
+//    user3.addRole(role3);
+//    user3.setEmail("anita@mail.ru");
+//    userService.save(user3);
 //  }
 
 

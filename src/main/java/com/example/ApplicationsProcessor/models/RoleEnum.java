@@ -1,9 +1,9 @@
 package com.example.ApplicationsProcessor.models;
 
 public enum RoleEnum {
-  USER ("Пользователь"),
-  ADMIN ("Администратор"),
-  OPERATOR ("Оператор");
+  ROLE_USER ("Пользователь"),
+  ROLE_ADMIN ("Администратор"),
+  ROLE_OPERATOR ("Оператор");
 
   private String title;
 

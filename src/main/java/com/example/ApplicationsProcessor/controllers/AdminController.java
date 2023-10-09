@@ -19,6 +19,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -48,16 +49,18 @@ public class AdminController {
 //    User admin = new User();
 //    admin.setName("Виктория");
 //    admin.setSurname("Повх");
-//    Role role = roleService.findById(1);
+//    Role role = roleService.findByRoleEnum(RoleEnum.ROLE_ADMIN);
 //    admin.addRole(role);
 //    admin.setEmail("povch@mail.ru");
+//    admin.setPassword("3579");
 //    userService.save(admin);
 //    User admin2 = new User();
 //    admin2.setName("Гера");
 //    admin2.setSurname("Вишневская");
-//    Role role2 = roleService.findById(1);
+//    Role role2 = roleService.findByRoleEnum(RoleEnum.ROLE_ADMIN);
 //    admin2.addRole(role2);
 //    admin2.setEmail("gera@mail.ru");
+//    admin2.setPassword("2468");
 //    userService.save(admin2);
 //  }
 
@@ -67,7 +70,7 @@ public class AdminController {
    */
   @PatchMapping("/{adminId}/users/{userId}/appoint")
   public ResponseEntity<HttpStatus> appoint(@PathVariable("userId") int userId) {
-    userService.updateRole(userId, roleService.findByRoleEnum(RoleEnum.OPERATOR));
+    userService.updateRole(userId, roleService.findByRoleEnum(RoleEnum.ROLE_OPERATOR));
     return ResponseEntity.ok(HttpStatus.OK);
   }
 

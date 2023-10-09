@@ -22,12 +22,19 @@ public class RoleService {
     return roleRepository.findById(id).get();
   }
 
+  @Transactional
   public void update(int id, Role role) {
     role.setId(id);
     roleRepository.save(role);
   }
+
   public Role findByRoleEnum(RoleEnum roleEnum) {
     return (Role) roleRepository.findByRole(roleEnum);
+  }
+
+  @Transactional
+  public void save(Role role) {
+    roleRepository.save(role);
   }
 
 }

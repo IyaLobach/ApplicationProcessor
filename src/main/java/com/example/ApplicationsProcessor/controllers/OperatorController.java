@@ -4,6 +4,7 @@ import com.example.ApplicationsProcessor.dto.ApplicationDTO;
 import com.example.ApplicationsProcessor.dto.UserForViewDTO;
 import com.example.ApplicationsProcessor.models.Application;
 import com.example.ApplicationsProcessor.models.Role;
+import com.example.ApplicationsProcessor.models.RoleEnum;
 import com.example.ApplicationsProcessor.models.Status;
 import com.example.ApplicationsProcessor.models.User;
 import com.example.ApplicationsProcessor.services.ApplicationService;
@@ -46,16 +47,18 @@ public class OperatorController {
 //    User operator = new User();
 //    operator.setName("Иван");
 //    operator.setSurname("Иванов");
-//    Role role = roleService.findById(3);
+//    Role role = roleService.findByRoleEnum(RoleEnum.ROLE_OPERATOR);
 //    operator.addRole(role);
 //    operator.setEmail("ivan@mail.ru");
+//    operator.setPassword("1357");
 //    userService.save(operator);
 //    User operator2 = new User();
-//    operator2.setName("Петр");
-//    operator2.setSurname("Петров");
-//    Role role2 = roleService.findById(3);
+//    operator2.setName("Анна");
+//    operator2.setSurname("Никитина");
+//    Role role2 = roleService.findByRoleEnum(RoleEnum.ROLE_OPERATOR);
 //    operator2.addRole(role2);
-//    operator2.setEmail("petr@mail.ru");
+//    operator2.setEmail("ann@mail.ru");
+//    operator2.setPassword("0246");
 //    userService.save(operator2);
 //  }
 
