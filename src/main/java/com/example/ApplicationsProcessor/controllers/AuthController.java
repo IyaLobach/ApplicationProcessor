@@ -19,9 +19,4 @@ public class AuthController {
     UserDetail user = (UserDetail) authentication.getPrincipal();
     return ResponseEntity.ok(HttpStatus.OK);
   }
-
-  @GetMapping("/login")
-  public String loginPage() {
-    return "auth/login";
-  }
 }

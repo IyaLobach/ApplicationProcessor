@@ -65,7 +65,7 @@ public class OperatorController {
   /**
    * Принятие заявки = изменение статуса заявки
    */
-  @PatchMapping("/{operatorId}/applications/{applicationId}/accept")
+  @PatchMapping("/applications/{applicationId}/accept")
   public ResponseEntity<HttpStatus> accept(
       @PathVariable("applicationId") int applicationId) {
     applicationService.accept(applicationId);
@@ -75,7 +75,7 @@ public class OperatorController {
   /**
    * Отклонение заявки = изменение статуса заявки
    */
-  @PatchMapping("/{operatorId}/applications/{applicationId}/reject")
+  @PatchMapping("/applications/{applicationId}/reject")
   public ResponseEntity<HttpStatus> reject(
       @PathVariable("applicationId") int applicationId) {
     applicationService.reject(applicationId);
@@ -86,7 +86,7 @@ public class OperatorController {
   /**
    * Просмотр отправленных заявок
    */
-  @GetMapping("/{operatorId}/applications")
+  @GetMapping("/applications")
   public ResponseEntity<List<ApplicationDTO>> show(
       @RequestParam(value = "page", required = false) String page,
       @RequestParam(value = "sort", required = false) String sort,

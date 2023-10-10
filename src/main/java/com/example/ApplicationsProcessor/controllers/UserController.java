@@ -6,6 +6,7 @@ import com.example.ApplicationsProcessor.models.Application;
 import com.example.ApplicationsProcessor.models.Role;
 import com.example.ApplicationsProcessor.models.RoleEnum;
 import com.example.ApplicationsProcessor.models.User;
+import com.example.ApplicationsProcessor.security.UserDetail;
 import com.example.ApplicationsProcessor.services.ApplicationService;
 import com.example.ApplicationsProcessor.services.RoleService;
 import com.example.ApplicationsProcessor.services.UserService;
@@ -18,6 +19,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -79,9 +84,8 @@ public class UserController {
   /**
    * Создание новой заявки
    */
-  @PostMapping("/{userId}/applications")
+  @PostMapping("/applications")
   public ResponseEntity<HttpStatus> create(
-      @PathVariable("userId") int userId,
       @RequestBody @Valid ApplicationDTO applicationDTO, BindingResult bindingResult) {
 
     if (bindingResult.hasErrors()) {
@@ -92,8 +96,10 @@ public class UserController {
       }
       throw new ApplicationException(message.toString());
     }
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    UserDetail user = (UserDetail) authentication.getPrincipal();
     applicationService
-        .create(modelMapper.map(applicationDTO, Application.class), userService.findById(userId));
+        .create(modelMapper.map(applicationDTO, Application.class), user.getUser());
 
     return ResponseEntity.ok(HttpStatus.OK);
   }
@@ -101,7 +107,7 @@ public class UserController {
   /**
    * Отправка заявки = обновление статуса заявки
    */
-  @PatchMapping("/{userId}/applications/{applicationId}/submit")
+  @PatchMapping("/applications/{applicationId}/submit")
   public ResponseEntity<HttpStatus> submit(@PathVariable("applicationId") int applicationId) {
     applicationService.submit(applicationId);
     return ResponseEntity.ok(HttpStatus.OK);
@@ -110,7 +116,7 @@ public class UserController {
   /**
    * Редактирование заявки = обновление текста заявки
    */
-  @PatchMapping("/{userId}/applications/{applicationId}/edit")
+  @PatchMapping("/applications/{applicationId}/edit")
   public ResponseEntity<HttpStatus> update(
       @PathVariable("applicationId") int applicationId,
       @RequestBody @Valid ApplicationDTO applicationDTO, BindingResult bindingResult) {
@@ -130,20 +136,21 @@ public class UserController {
   }
 
   // проблема N + 1
-
   /**
    * Просмотр заявок
    */
-  @GetMapping("/{userId}/applications")
-  public ResponseEntity<List<ApplicationDTO>> show(@PathVariable("userId") int userId,
+  @GetMapping("/applications")
+  public ResponseEntity<List<ApplicationDTO>> show(
       @RequestParam(value = "page", required = false) String page,
       @RequestParam(value = "sort", required = false) String sort) {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    UserDetail user = (UserDetail) authentication.getPrincipal();
     List<Application> applicationList = null;
     if (page == null) {
-      applicationList = applicationService.showApplicationByUserId(userId);
+      applicationList = applicationService.showApplicationByUserId(user.getUser().getId());
     } else {
       applicationList = applicationService
-          .showApplicationByUserId(userId, Integer.parseInt(page), sort);
+          .showApplicationByUserId(user.getUser().getId(), Integer.parseInt(page), sort);
     }
     ArrayList<ApplicationDTO> applicationDTOList = new ArrayList<>();
     for (Application application : applicationList) {

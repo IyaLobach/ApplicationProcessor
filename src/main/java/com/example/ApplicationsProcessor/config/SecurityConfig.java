@@ -12,8 +12,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+@Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
@@ -29,19 +29,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
-    // конфигурируем сам Spring Security
-    // конфигурируем авторизацию
     http.csrf().disable()
         .authorizeRequests()
-        .antMatchers("/api/auth").permitAll()
         .antMatchers("/api/admins/**").hasRole("ADMIN")
         .antMatchers("/api/users/**").hasRole("USER")
         .antMatchers("/api/operators/**").hasRole("OPERATOR")
+        .anyRequest().permitAll()
         .and()
         .httpBasic();
   }
 
-  // Настраиваем аутентификацию
   @Override
   protected void configure(AuthenticationManagerBuilder auth) throws Exception {
     auth.userDetailsService(personDetailsService)

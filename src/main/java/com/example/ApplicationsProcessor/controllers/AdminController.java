@@ -68,7 +68,7 @@ public class AdminController {
   /**
    * Назначение пользователя правами оператора
    */
-  @PatchMapping("/{adminId}/users/{userId}/appoint")
+  @PatchMapping("/users/{userId}/appoint")
   public ResponseEntity<HttpStatus> appoint(@PathVariable("userId") int userId) {
     userService.updateRole(userId, roleService.findByRoleEnum(RoleEnum.ROLE_OPERATOR));
     return ResponseEntity.ok(HttpStatus.OK);
@@ -77,7 +77,7 @@ public class AdminController {
   /**
    * Получение всех пользователей
    */
-  @GetMapping("/{adminId}/users")
+  @GetMapping("/users")
   public ResponseEntity<List<UserDTO>> show(
       @RequestParam(value = "name", required = false) String userName) {
     List<User> userList = null;
