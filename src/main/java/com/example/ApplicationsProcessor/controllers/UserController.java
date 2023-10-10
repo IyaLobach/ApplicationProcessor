@@ -99,7 +99,7 @@ public class UserController {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     UserDetail user = (UserDetail) authentication.getPrincipal();
     applicationService
-        .create(modelMapper.map(applicationDTO, Application.class), user.getUser());
+        .create(modelMapper.map(applicationDTO, Application.class), userService.findById(user.getUser().getId()));
 
     return ResponseEntity.ok(HttpStatus.OK);
   }
