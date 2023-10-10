@@ -5,12 +5,21 @@ import java.util.Date;
 
 public class ApplicationDTO {
 
+  private int id;
   private String text;
   private Status status;
   private Date date;
   private UserForViewDTO userForViewDTO;
 
   public ApplicationDTO() {
+  }
+
+  public int getId() {
+    return id;
+  }
+
+  public void setId(int id) {
+    this.id = id;
   }
 
   public String getText() {
