@@ -14,9 +14,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
 
 @Entity
-@Table(schema = "application_processor", name="application")
+@Table(schema = "application_processor", name = "application",
+    uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "text"})}
+    )
 public class Application {
 
   @Id

@@ -99,7 +99,8 @@ public class UserController {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     UserDetail user = (UserDetail) authentication.getPrincipal();
     applicationService
-        .create(modelMapper.map(applicationDTO, Application.class), userService.findById(user.getUser().getId()));
+        .create(modelMapper.map(applicationDTO, Application.class),
+            userService.findById(user.getUser().getId()));
 
     return ResponseEntity.ok(HttpStatus.OK);
   }
@@ -136,26 +137,23 @@ public class UserController {
   }
 
   // проблема N + 1
+
   /**
    * Просмотр заявок
    */
   @GetMapping("/applications")
   public ResponseEntity<List<ApplicationDTO>> show(
-      @RequestParam(value = "page", required = false) String page,
+      @RequestParam(value = "page", required = true) String page,
       @RequestParam(value = "sort", required = false) String sort) {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     UserDetail user = (UserDetail) authentication.getPrincipal();
-    List<Application> applicationList = null;
-    if (page == null) {
-      applicationList = applicationService.showApplicationByUserId(user.getUser().getId());
-    } else {
-      applicationList = applicationService
-          .showApplicationByUserId(user.getUser().getId(), Integer.parseInt(page), sort);
-    }
+    List<Application> applicationList = applicationService
+        .showApplicationByUserId(user.getUser().getId(), Integer.parseInt(page), sort);
     ArrayList<ApplicationDTO> applicationDTOList = new ArrayList<>();
     for (Application application : applicationList) {
       ApplicationDTO applicationDTO = modelMapper.map(application, ApplicationDTO.class);
-      applicationDTO.setUserForViewDTO(modelMapper.map(application.getUser(), UserForViewDTO.class));
+      applicationDTO
+          .setUserForViewDTO(modelMapper.map(application.getUser(), UserForViewDTO.class));
       applicationDTOList.add(applicationDTO);
     }
     return new ResponseEntity<>(applicationDTOList, HttpStatus.OK);

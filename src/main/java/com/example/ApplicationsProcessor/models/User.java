@@ -16,6 +16,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import org.hibernate.annotations.Fetch;
 
 @Entity
@@ -46,7 +47,8 @@ public class User {
       schema = "application_processor",
       name = "user_role",
       joinColumns = @JoinColumn(name = "user_id"),
-      inverseJoinColumns = @JoinColumn(name="role")
+      inverseJoinColumns = @JoinColumn(name = "role"),
+      uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "role"})
   )
   private List<Role> role;
 
@@ -118,14 +120,16 @@ public class User {
   }
 
   public void addApplication(Application application) {
-    if (applications == null)
+    if (applications == null) {
       applications = new ArrayList<>();
+    }
     applications.add(application);
   }
 
   public void addRole(Role role) {
-    if (this.role == null)
+    if (this.role == null) {
       this.role = new ArrayList<>();
+    }
     this.role.add(role);
   }
 

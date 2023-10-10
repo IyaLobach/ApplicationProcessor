@@ -14,9 +14,10 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface IApplicationRepository extends JpaRepository<Application, Integer> {
   List<Application> findAllByUserId(int id);
-  List<Application> findAllByStatus(Status status);
+  Page<Application> findAllByStatus(Status status, PageRequest pageRequest);
   Page<Application> findAllByStatus(Status status, PageRequest pageRequest, Sort sort);
   Page<Application> findByUserId(int id, PageRequest pageRequest, Sort sort);
-  List<Application> findAllByStatusAndUserNameContaining(Status status, String name);
+  Page<Application> findAllByUserId(int id, PageRequest pageRequest);
   Page<Application> findAllByStatusAndUserNameContaining(Status status, String name, PageRequest pageRequest, Sort sort);
+  Page<Application> findAllByStatusAndUserNameContaining(Status status, String name, PageRequest pageRequest);
 }

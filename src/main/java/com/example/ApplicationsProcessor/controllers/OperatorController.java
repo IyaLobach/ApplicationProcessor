@@ -83,33 +83,30 @@ public class OperatorController {
   }
 
   // ПРОБЛЕМА N + 1
+
   /**
    * Просмотр отправленных заявок
    */
   @GetMapping("/applications")
   public ResponseEntity<List<ApplicationDTO>> show(
-      @RequestParam(value = "page", required = false) String page,
+      @RequestParam(value = "page", required = true) String page,
       @RequestParam(value = "sort", required = false) String sort,
       @RequestParam(value = "name", required = false) String userName) {
     List<Application> applicationList = null;
-    if (page == null) {
-      if (userName == null) {
-        applicationList = applicationService.showApplicationByStatus(Status.SUBMITTED);
-      } else {
-        applicationList = applicationService.showApplicationByUserName(userName);
-      }
+
+    if (userName != null) {
+      applicationList = applicationService
+          .showApplicationByUserName(userName, Integer.parseInt(page), sort);
     } else {
-      if (userName != null) {
-        applicationList = applicationService.showApplicationByUserName(userName, Integer.parseInt(page), sort);
-      } else {
-        applicationList = applicationService
-            .showApplicationByStatus(Status.SUBMITTED, Integer.parseInt(page), sort);
-      }
+      applicationList = applicationService
+          .showApplicationByStatus(Status.SUBMITTED, Integer.parseInt(page), sort);
     }
+
     ArrayList<ApplicationDTO> applicationDTOList = new ArrayList<>();
     for (Application application : applicationList) {
       ApplicationDTO applicationDTO = modelMapper.map(application, ApplicationDTO.class);
-      applicationDTO.setUserForViewDTO(modelMapper.map(application.getUser(), UserForViewDTO.class));
+      applicationDTO
+          .setUserForViewDTO(modelMapper.map(application.getUser(), UserForViewDTO.class));
       applicationDTO.applicationTextConversion();
       applicationDTOList.add(applicationDTO);
     }

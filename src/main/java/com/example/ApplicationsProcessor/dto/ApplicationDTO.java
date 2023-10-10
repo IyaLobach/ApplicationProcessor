@@ -2,11 +2,15 @@ package com.example.ApplicationsProcessor.dto;
 
 import com.example.ApplicationsProcessor.models.Status;
 import java.util.Date;
+import javax.validation.constraints.NotEmpty;
 
 public class ApplicationDTO {
 
   private int id;
+
+  @NotEmpty
   private String text;
+
   private Status status;
   private Date date;
   private UserForViewDTO userForViewDTO;

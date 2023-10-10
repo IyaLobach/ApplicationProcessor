@@ -29,6 +29,7 @@ public class ApplicationService {
 
   @Transactional
   public void create(Application application, User creator) {
+    application.setId(application.getId());
     application.setUser(creator);
     application.setStatus(Status.DRAFT);
     application.setDate(new Date());
@@ -92,38 +93,42 @@ public class ApplicationService {
 
   public List<Application> showApplicationByUserId(int userId, int page, String sort) {
     Page<Application> result = null;
-    if (sort.equals("asc")) {
-      result = applicationRepository
-          .findByUserId(userId, PageRequest.of(page, 5), Sort.by("date").ascending());
+    if (sort == null) {
+      result = applicationRepository.findAllByUserId(userId, PageRequest.of(page, 5));
     } else {
-      if (sort.equals("desc")) {
+      if (sort.equals("asc")) {
         result = applicationRepository
-            .findByUserId(userId, PageRequest.of(page, 5), Sort.by("date").descending());
+            .findByUserId(userId, PageRequest.of(page, 5), Sort.by("date").ascending());
       } else {
-        throw new ApplicationException("Сортировка задана неверно");
+        if (sort.equals("desc")) {
+          result = applicationRepository
+              .findByUserId(userId, PageRequest.of(page, 5), Sort.by("date").descending());
+        } else {
+          throw new ApplicationException("Сортировка задана неверно");
+        }
       }
     }
-    if (result == null) {
+    if (result.isEmpty()) {
       throw new ApplicationException("Номер старницы указан неверно");
     }
     return result.getContent();
   }
 
-  public List<Application> showApplicationByUserId(int userId) {
-    return applicationRepository.findAllByUserId(userId);
-  }
-
   public List<Application> showApplicationByStatus(Status status, int page, String sort) {
     Page<Application> applications = null;
-    if (sort.equals("asc")) {
-      applications = applicationRepository
-          .findAllByStatus(status, PageRequest.of(page, 5), Sort.by("date").ascending());
+    if (sort == null) {
+      applications = applicationRepository.findAllByStatus(status, PageRequest.of(page,5));
     } else {
-      if (sort.equals("desc")) {
+      if (sort.equals("asc")) {
         applications = applicationRepository
-            .findAllByStatus(status, PageRequest.of(page, 5), Sort.by("date").descending());
+            .findAllByStatus(status, PageRequest.of(page, 5), Sort.by("date").ascending());
       } else {
-        throw new ApplicationException("Неверно задана сортировка");
+        if (sort.equals("desc")) {
+          applications = applicationRepository
+              .findAllByStatus(status, PageRequest.of(page, 5), Sort.by("date").descending());
+        } else {
+          throw new ApplicationException("Неверно задана сортировка");
+        }
       }
     }
     if (applications.isEmpty()) {
@@ -132,27 +137,25 @@ public class ApplicationService {
     return applications.getContent();
   }
 
-  public List<Application> showApplicationByStatus(Status status) {
-    return applicationRepository.findAllByStatus(status);
-  }
-
-  public List<Application> showApplicationByUserName(String userName) {
-    return applicationRepository.findAllByStatusAndUserNameContaining(Status.SUBMITTED, userName);
-  }
-
   public List<Application> showApplicationByUserName(String userName, int page, String sort) {
     Page<Application> applications = null;
-    if (sort.equals("asc")) {
-      applications = applicationRepository
-         .findAllByStatusAndUserNameContaining(Status.SUBMITTED, userName, PageRequest.of(page, 5),
-              Sort.by("date").ascending());
+    if (sort == null) {
+        applications = applicationRepository.findAllByStatusAndUserNameContaining(Status.SUBMITTED, userName, PageRequest.of(page,5));
     } else {
-      if (sort.equals("desc")) {
+      if (sort.equals("asc")) {
         applications = applicationRepository
-            .findAllByStatusAndUserNameContaining(Status.SUBMITTED, userName, PageRequest.of(page, 5),
-                Sort.by("date").descending());
+            .findAllByStatusAndUserNameContaining(Status.SUBMITTED, userName,
+                PageRequest.of(page, 5),
+                Sort.by("date").ascending());
       } else {
-        throw new ApplicationException("Неверно задана сортировка");
+        if (sort.equals("desc")) {
+          applications = applicationRepository
+              .findAllByStatusAndUserNameContaining(Status.SUBMITTED, userName,
+                  PageRequest.of(page, 5),
+                  Sort.by("date").descending());
+        } else {
+          throw new ApplicationException("Неверно задана сортировка");
+        }
       }
     }
     if (applications.isEmpty()) {
